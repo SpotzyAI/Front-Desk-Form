@@ -549,22 +549,6 @@
     </style>
 </head>
 <body>
-    <!-- Auto-Save Indicator -->
-    <div id="saveIndicator" style="
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 12px 20px;
-        border-radius: 10px;
-        font-size: 14px;
-        font-weight: 600;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        z-index: 1000;
-        display: none;
-        animation: slideIn 0.3s ease;
-    ">
-        💾 Auto-save enabled
-    </div>
     
     <!-- Control Buttons -->
     <div style="
@@ -620,14 +604,6 @@
         }
         
         @media (max-width: 768px) {
-            #saveIndicator {
-                top: 10px;
-                right: 10px;
-                left: 10px;
-                font-size: 12px;
-                padding: 10px 15px;
-            }
-            
             div[style*="bottom: 20px"] {
                 bottom: 10px;
                 right: 10px;
@@ -3575,33 +3551,15 @@
             }
         }
         
-        // Show save indicator
+        // Show save indicator (disabled - no visual indicator for users)
         function showSaveIndicator(status) {
-            const indicator = document.getElementById('saveIndicator');
-            if (!indicator) return;
-            
-            if (status === 'saving') {
-                indicator.textContent = '💾 Saving...';
-                indicator.style.background = '#FEF3C7';
-                indicator.style.color = '#92400E';
-            } else if (status === 'saved') {
-                indicator.textContent = '✅ Draft saved for: ' + getHotelId();
-                indicator.style.background = '#D1FAE5';
-                indicator.style.color = '#065F46';
+            // Silently log to console only
+            if (status === 'saved') {
+                console.log('✅ Draft saved for:', getHotelId());
             } else if (status === 'error') {
-                indicator.textContent = '⚠️ Save failed';
-                indicator.style.background = '#FEE2E2';
-                indicator.style.color = '#991B1B';
+                console.log('⚠️ Save failed');
             }
-            
-            indicator.style.display = 'block';
-            
-            // Hide after 3 seconds (except for saved status)
-            if (status !== 'saved') {
-                setTimeout(() => {
-                    indicator.style.display = 'none';
-                }, 3000);
-            }
+            // No visual indicator shown to users
         }
         
         // Copy unique link to clipboard
@@ -3651,20 +3609,15 @@
         
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
-            // Show hotel ID in indicator
+            // Show hotel ID in console only
             const hotelId = getHotelId();
             console.log('🏨 Hotel ID:', hotelId);
             
             // Try to restore saved data
             const restored = restoreFormData();
             
-            // Always show hotel ID indicator
-            const indicator = document.getElementById('saveIndicator');
-            if (indicator) {
-                indicator.textContent = '🏨 Saving as: ' + hotelId;
-                indicator.style.display = 'block';
-                indicator.style.background = '#EFF6FF';
-                indicator.style.color = '#1E40AF';
+            if (restored) {
+                console.log('✅ Previous data restored');
             }
             
             // Start auto-save
